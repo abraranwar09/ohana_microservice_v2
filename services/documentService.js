@@ -67,9 +67,15 @@ exports.summarize = async (documentID) => {
         };
         // console.log(fullContent);
         let response = await callGPT(fullContent, document.title)
-        return response;
+        let object = {
+            summary: response,
+            title: document.title,
+            url: `https://docs.google.com/document/d/${documentID}`
+        }
+        return object;
     } catch (error) {
-        throw new Error("Unable to use document service");
+        // throw new Error("Unable to use document service");
+        console.log(error);
     }
 
 }
