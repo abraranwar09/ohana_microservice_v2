@@ -68,7 +68,7 @@ exports.getCleanupInstructions = async (imageUrl, caption) => {
       return JSON.parse(result.choices[0].message?.content);
       
    } catch (error) {
-    // throw new Error("Unable to get cleanup instructions");
-    console.log(error.message);
+    throw new Error("Unable to get cleanup instructions");
+    // console.log(error.message);
    }
 };
