@@ -7,6 +7,7 @@ const indexRoutes = require('./routes/indexRoutes');
 // const dataFromImageRoutes = require('./routes/dataFromImageRoutes'); 
 const questionRoutes = require('./routes/questionRoutes'); 
 const imageRoutes = require('./routes/imageRoutes');
+const documentRoutes = require('./routes/documentRoutes');
 
 // Import other route files as needed
 
@@ -33,12 +34,9 @@ app.use((req,res,next) =>{
 
 // Set up routes
 app.use('/', indexRoutes); // main status route
-// app.use('/', formDataRoutes); //get form data and ducment
-// app.use('/', cleanupInstructionsRoutes); //cleanup instructions route
-// app.use('/', ingredientsRoutes); // ingredients related routes
-// app.use('/', dataFromImageRoutes); // basic image data
 app.use('/', questionRoutes);
 app.use('/', imageRoutes);
+app.use('/', documentRoutes);
 
 // Add other routes here
 
