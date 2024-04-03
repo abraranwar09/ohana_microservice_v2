@@ -23,6 +23,7 @@ google.options({ auth });
 
 
 exports.summarize = async (documentID) => {
+   
     //get docs function
     const getDocs = async (documentID) => {
         const res = await docs.documents.get({
@@ -70,6 +71,5 @@ exports.summarize = async (documentID) => {
     } catch (error) {
         throw new Error("Unable to use document service");
     }
-
 
 }
