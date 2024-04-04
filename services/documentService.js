@@ -8,7 +8,7 @@ const openai = new OpenAI({
 
 const docs = google.docs('v1');
 const auth = new google.auth.GoogleAuth({
-    keyFile: './ohana-382108-90c4961bc902.json',
+    keyFile: './tranquil-apogee-394711-0c31a0f3570d.json',
     scopes: [
         'https://www.googleapis.com/auth/documents',
         'https://www.googleapis.com/auth/documents.readonly',
