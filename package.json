@@ -20,7 +20,7 @@
     "fs": "^0.0.1-security",
     "googleapis": "^134.0.0",
     "nodemon": "^2.0.22",
-    "openai": "^4.30.0",
+    "openai": "^4.38.5",
     "readline-sync": "^1.4.10",
     "request": "^2.88.2"
   }

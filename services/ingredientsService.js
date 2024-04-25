@@ -1,19 +1,16 @@
-const { OpenAIClient, AzureKeyCredential } = require("@azure/openai");
-
+const OpenAI = require('openai');
 
 
 exports.getIngredientsFromImage = async (imageUrl, caption, lastMessageOne, lastMessageTwo, role) => {
-  const key = process.env.OPENAI_WEST_KEY;
-  const endpoint = process.env.OPENAI_WEST_ENDPOINT;  
+  
   
   try {
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    const model = 'gpt-4-vision-preview';
     
-        const client = new OpenAIClient(
-            endpoint,
-            new AzureKeyCredential(key));
-      
-          // const deploymentName = "ohanaai";
-          const deploymentName = "ohanaeye";
           const messages = [
             { role: 'system', content: `You will help identify all ingredients, food items and brands in this image.
             
@@ -41,9 +38,13 @@ exports.getIngredientsFromImage = async (imageUrl, caption, lastMessageOne, last
               },
           ];
     
-    
-          const result = await client.getChatCompletions(deploymentName, messages, { maxTokens: 1000 });
-          return result.choices[0].message?.content;
+          const result = await openai.chat.completions.create({model, messages});
+
+          let object = {
+            description: result.choices[0].message.content,
+            image: imageUrl
+          };
+          return object;
           
        } catch (error) {
         throw new Error("Unable to get ingredients from image");

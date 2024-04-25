@@ -1,20 +1,19 @@
-const { OpenAIClient, AzureKeyCredential } = require("@azure/openai");
+const OpenAI = require('openai');
 
-const history = [];
 
 exports.isYesNoQuestion = async (question) => {
-  const key = process.env.OPENAI_EAST2_KEY;
-  const endpoint = process.env.OPENAI_EAST2_ENDPOINT;
-
     try {
+      const history = [];
 
-        const client = new OpenAIClient(
-            endpoint,
-            new AzureKeyCredential(key));
-    
-        const deploymentId = "ohanafour";
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+        
     
         const messages = [];
+
+        const model = 'gpt-4';
+
         for (const [input_text, completion_text] of history) {
           messages.push({ role: 'user', content: input_text });
           messages.push({ role: 'assistant', content: completion_text });
@@ -34,27 +33,30 @@ exports.isYesNoQuestion = async (question) => {
         `;
 
         messages.push({ role: 'user', content: prompt });
-          const completion = await client.getChatCompletions(deploymentId, messages);
-          const responses = completion;
-          console.log(responses.choices[0].message.content);
-          return responses.choices[0].message.content;
+
+        const result = await openai.chat.completions.create({model, messages});
+
+        let object = {
+          type: result.choices[0].message.content,
+        };
+        return object;
 
     } catch (error) {
+      console.log(error);
         throw new Error("Unable to parse question");
     }
 }
 
 exports.getOptionsForQuestion = async (question) => {
-  const key = process.env.OPENAI_EAST2_KEY;
-  const endpoint = process.env.OPENAI_EAST2_ENDPOINT;
 
     try {
-      console.log(key, endpoint);
-        const client = new OpenAIClient(
-            endpoint,
-            new AzureKeyCredential(key));
-    
-        const deploymentId = "ohanafour";
+      const history = [];
+      
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+
+      const model = 'gpt-4';
         
         const messages = [];
         for (const [input_text, completion_text] of history) {
@@ -73,10 +75,12 @@ exports.getOptionsForQuestion = async (question) => {
         ["yes","no","maybe","I don't know"];    
         `;
         messages.push({ role: 'user', content: prompt });
-          const completion = await client.getChatCompletions(deploymentId, messages);
-          const responses = completion;
-        //   console.log(responses.choices[0].message.content);
-          return JSON.parse(responses.choices[0].message.content);
+        
+        const result = await openai.chat.completions.create({model, messages});
+
+        let parse = JSON.parse(result.choices[0].message.content);
+
+        return parse;
 
     } catch (error) {
         // throw new Error("Cannot parse question");

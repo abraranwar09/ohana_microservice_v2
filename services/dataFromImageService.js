@@ -1,21 +1,16 @@
-const { OpenAIClient, AzureKeyCredential } = require("@azure/openai");
+const OpenAI = require('openai');
 
 
-
-
-exports.getDataFromImage = async (imageUrl, caption, lastMessageOne, lastMessageTwo, role) => {
-  const key = process.env.OPENAI_WEST_KEY;
-  const endpoint = process.env.OPENAI_WEST_ENDPOINT;  
-  
+exports.getDataFromImage = async (imageUrl, caption, lastMessageOne, lastMessageTwo, role) => { 
   try {
     
-        const client = new OpenAIClient(
-            endpoint,
-            new AzureKeyCredential(key));
-      
-          // const deploymentName = "ohanaai";
-          const deploymentName = "ohanaeye";
-          const messages = [
+          const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+          });
+
+          const model = 'gpt-4-vision-preview';
+  
+              const messages = [
             { role: 'system', content: `My prompt is: ${caption}. I am already in a chat with a GPT model. These are our last two messages for context:
               1. ${lastMessageOne}
               2. ${lastMessageTwo}.
@@ -37,8 +32,13 @@ exports.getDataFromImage = async (imageUrl, caption, lastMessageOne, lastMessage
           ];
     
     
-          const result = await client.getChatCompletions(deploymentName, messages, { maxTokens: 1000 });
-          return result.choices[0].message?.content;
+          const result = await openai.chat.completions.create({model, messages});
+
+          let object = {
+            description: result.choices[0].message.content,
+            image: imageUrl
+          };
+          return object;
           
        } catch (error) {
         // throw new Error("Unable to get data from image");

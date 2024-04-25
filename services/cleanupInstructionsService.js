@@ -1,19 +1,15 @@
-const { OpenAIClient, AzureKeyCredential } = require("@azure/openai");
-
+const OpenAI = require('openai');
 
 exports.getCleanupInstructions = async (imageUrl, caption) => {
-  const key = process.env.OPENAI_WEST_KEY;
-  const endpoint = process.env.OPENAI_WEST_ENDPOINT;
   
    try {
 
-    const client = new OpenAIClient(
-        endpoint,
-        new AzureKeyCredential(key));
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    const model= 'gpt-4-vision-preview';
   
-      // const deploymentName = "ohanaai";
-      const url = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg";
-      const deploymentName = "ohanaeye";
       const messages = [
         { role: 'system', content: `You will help create steps to clean up the room or space in the image.
         
@@ -63,9 +59,15 @@ exports.getCleanupInstructions = async (imageUrl, caption) => {
       ];
 
 
-      const result = await client.getChatCompletions(deploymentName, messages, { maxTokens: 1000 });
-      console.log(result.choices[0].message?.content);
-      return JSON.parse(result.choices[0].message?.content);
+      const result = await openai.chat.completions.create({model, messages});
+      const parse = JSON.parse(result.choices[0].message.content);
+
+
+      let object = {
+        content: parse,
+        image: imageUrl
+      };
+      return object;
       
    } catch (error) {
     throw new Error("Unable to get cleanup instructions");
